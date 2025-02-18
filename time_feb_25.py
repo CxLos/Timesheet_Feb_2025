@@ -201,6 +201,35 @@ nav_hours_pie = px.pie(
     hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'  # Updated hovertemplate to show hours
 )
 
+# Table
+nav_table = go.Figure(data=[go.Table(
+    # columnwidth=[50, 50, 50],  # Adjust the width of the columns
+    header=dict(
+        values=list(nav_hours.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,  # Adjust the height of the header cells
+        # line=dict(color='black', width=1),  # Add border to header cells
+        font=dict(size=12)  # Adjust font size
+    ),
+    cells=dict(
+        values=[nav_hours[col] for col in nav_hours.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,  # Adjust the height of the cells
+        # line=dict(color='black', width=1),  # Add border to cells
+        font=dict(size=12)  # Adjust font size
+    )
+)])
+
+nav_table.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
+    height=400,
+    # width=1500,  # Set a smaller width to make columns thinner
+    paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
+    plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
+)
+
 # ---------------------------- MarCom Hours ------------------------------ #
 
 # print(df_mc.columns)
@@ -304,6 +333,35 @@ mc_hours_pie = px.pie(
     hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'  # Updated hovertemplate to show hours
 )
 
+# Table
+mc_table = go.Figure(data=[go.Table(
+    # columnwidth=[50, 50, 50],  # Adjust the width of the columns
+    header=dict(
+        values=list(mc_hours.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,  # Adjust the height of the header cells
+        # line=dict(color='black', width=1),  # Add border to header cells
+        font=dict(size=12)  # Adjust font size
+    ),
+    cells=dict(
+        values=[mc_hours[col] for col in mc_hours.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,  # Adjust the height of the cells
+        # line=dict(color='black', width=1),  # Add border to cells
+        font=dict(size=12)  # Adjust font size
+    )
+)])
+
+mc_table.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
+    height=400,
+    # width=1500,  # Set a smaller width to make columns thinner
+    paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
+    plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
+)
+
 # -------------------------- Engagement Hours ------------------------------ #
 
 # print(df_eng.columns)
@@ -404,6 +462,35 @@ eng_hours_pie = px.pie(
     rotation=90,
     textinfo='value+percent',  # Show value and percentage on the pie slices
     hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'  # Updated hovertemplate to show hours
+)
+
+# Table
+eng_table = go.Figure(data=[go.Table(
+    # columnwidth=[50, 50, 50],  # Adjust the width of the columns
+    header=dict(
+        values=list(eng_hours.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,  # Adjust the height of the header cells
+        # line=dict(color='black', width=1),  # Add border to header cells
+        font=dict(size=12)  # Adjust font size
+    ),
+    cells=dict(
+        values=[eng_hours[col] for col in eng_hours.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,  # Adjust the height of the cells
+        # line=dict(color='black', width=1),  # Add border to cells
+        font=dict(size=12)  # Adjust font size
+    )
+)])
+
+eng_table.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
+    height=400,
+    # width=1500,  # Set a smaller width to make columns thinner
+    paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
+    plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
 )
 
 # ---------------------------- IT Hours ------------------------------ #
@@ -549,6 +636,35 @@ it_hours_pie = px.pie(
     hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'  # Updated hovertemplate to show hours
 )
 
+# Table
+it_table = go.Figure(data=[go.Table(
+    # columnwidth=[50, 50, 50],  # Adjust the width of the columns
+    header=dict(
+        values=list(it_hours.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,  # Adjust the height of the header cells
+        # line=dict(color='black', width=1),  # Add border to header cells
+        font=dict(size=12)  # Adjust font size
+    ),
+    cells=dict(
+        values=[it_hours[col] for col in it_hours.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,  # Adjust the height of the cells
+        # line=dict(color='black', width=1),  # Add border to cells
+        font=dict(size=12)  # Adjust font size
+    )
+)])
+
+it_table.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
+    height=400,
+    # width=1500,  # Set a smaller width to make columns thinner
+    paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
+    plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
+)
+
 # ============================== Dash Application ========================== #
 
 import dash
@@ -638,6 +754,50 @@ html.Div(
             children=[
                 dcc.Graph(
                     figure=eng_hours_pie
+                )
+            ]
+        )
+    ]
+),
+        
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                dcc.Graph(
+                    figure=nav_table
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[
+                dcc.Graph(
+                    figure=mc_table
+                )
+            ]
+        )
+    ]
+),
+        
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                dcc.Graph(
+                    figure=eng_table
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[
+                dcc.Graph(
+                    figure=it_table
                 )
             ]
         )
