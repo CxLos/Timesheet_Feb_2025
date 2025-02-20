@@ -47,26 +47,46 @@ df_eng = df_eng.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 df_mc = df_mc.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 df_it = df_it.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 
-# Define a discrete color sequence
-# color_sequence = px.colors.qualitative.Plotly
-
 # Convert 'Date of Activity' to datetime format
 df_nav['Date of Activity'] = pd.to_datetime(df_nav['Date of Activity'], errors='coerce')
 df_eng['Date of Activity'] = pd.to_datetime(df_eng['Date of Activity'], errors='coerce')
 df_mc['Date of Activity'] = pd.to_datetime(df_mc['Date of Activity'], errors='coerce')
 df_it['Date of Activity'] = pd.to_datetime(df_it['Date of Activity'], errors='coerce')
 
-# Navigation
-df_nav = df_nav[(df_nav['Date of Activity'] >= "2025-02-01") & (df_nav['Date of Activity'] <= "2025-02-14")]
+# Convert 'Date of Activity' to datetime format
+# df_nav['Date of Activity'] = pd.to_datetime(df_nav['Date of Activity'], errors='coerce')
+# df_eng['Date of Activity'] = pd.to_datetime(df_eng['Date of Activity'], errors='coerce')
+# df_mc['Date of Activity'] = pd.to_datetime(df_mc['Date of Activity'], errors='coerce')
+# df_it['Date of Activity'] = pd.to_datetime(df_it['Date of Activity'], errors='coerce')
 
-# Engagement
-df_eng = df_eng[(df_eng['Date of Activity'] >= "2025-02-01") & (df_eng['Date of Activity'] <= "2025-02-14")]
+# FIRST HALF
+df_nav1 = df_nav[(df_nav['Date of Activity'] >= "2025-02-01") & (df_nav['Date of Activity'] <= "2025-02-14")]
+df_eng1 = df_eng[(df_eng['Date of Activity'] >= "2025-02-01") & (df_eng['Date of Activity'] <= "2025-02-14")]
+df_mc1 = df_mc[(df_mc['Date of Activity'] >= "2025-02-01") & (df_mc['Date of Activity'] <= "2025-02-14")]
+df_it1 = df_it[(df_it['Date of Activity'] >= "2025-02-01") & (df_it['Date of Activity'] <= "2025-02-14")]
 
-# MarCom
-df_mc = df_mc[(df_mc['Date of Activity'] >= "2025-02-01") & (df_mc['Date of Activity'] <= "2025-02-14")]
+# SECOND HALF
+df_nav2 = df_nav[(df_nav['Date of Activity'] >= "2025-02-15") & (df_nav['Date of Activity'] <= "2025-02-28")]
+df_eng2 = df_eng[(df_eng['Date of Activity'] >= "2025-02-15") & (df_eng['Date of Activity'] <= "2025-02-28")]
+df_mc2 = df_mc[(df_mc['Date of Activity'] >= "2025-02-15") & (df_mc['Date of Activity'] <= "2025-02-28")]
+df_it2 = df_it[(df_it['Date of Activity'] >= "2025-02-15") & (df_it['Date of Activity'] <= "2025-02-28")]
 
-# IT
-df_it = df_it[(df_it['Date of Activity'] >= "2025-02-01") & (df_it['Date of Activity'] <= "2025-02-14")]
+# Rename "Activity Duration (hours):" to "Hours"
+# df_it1['Hours'] = pd.to_numeric(df_it1['Activity Duration (hours):'], errors='coerce')
+
+# Rename "Activity Duration (hours):" to "Hours" for all dataframes
+for df in [df_mc1, df_mc2, df_it1, df_it2]:
+    df['Hours'] = pd.to_numeric(df['Activity Duration (hours):'], errors='coerce')
+    
+# for df in [df_nav1, df_nav2]:
+#     df['Hours'] = pd.to_numeric(df['Activity Duration (hours)'], errors='coerce')
+    
+for df in [df_eng1, df_eng2, df_nav1, df_nav2]:
+    if 'Activity Duration (minutes):' in df.columns:
+        df['Hours'] = pd.to_numeric(df['Activity Duration (minutes):'], errors='coerce') / 60
+    # else:
+    #     print(f"Column 'Activity Duration (minutes):' not found in dataframe. Available columns: {df.columns}")
+
  
 
 # print(df.head(10))
@@ -115,19 +135,20 @@ df_it = df_it[(df_it['Date of Activity'] >= "2025-02-01") & (df_it['Date of Acti
 # Create a dataframe where you count the total minutes under "Activity duration (minutes): grouped by "Person filling out this form:"
 
 # Group by 'Person filling out this form:' and sum the 'Activity duration (minutes):'
-nav_hours = df_nav.groupby('Person filling out this form:')['Activity duration (minutes):'].sum().reset_index()
+# Group by 'Person filling out this form:' and sum the 'Activity duration (minutes):'
+nav_hours1 = df_nav1.groupby('Person filling out this form:')['Activity duration (minutes):'].sum().reset_index()
 
-nav_hours['Activity duration (hours):'] = nav_hours['Activity duration (minutes):'] / 60
+nav_hours1['Activity duration (hours):'] = nav_hours1['Activity duration (minutes):'] / 60
 
 # Optional: Sort the results by total activity duration, descending
-nav_hours = nav_hours.sort_values(by='Activity duration (minutes):', ascending=False)
+nav_hours1 = nav_hours1.sort_values(by='Activity duration (minutes):', ascending=False)
 
 # Display the grouped DataFrame
 # print(activity_duration_grouped)
 
 # Bar Chart for Activity Duration by Person
-nav_hours_bar = px.bar(
-    nav_hours,
+nav_hours_bar1 = px.bar(
+    nav_hours1,
     x="Person filling out this form:",
     y='Activity duration (hours):',  # Now using hours
     color="Person filling out this form:",
@@ -183,8 +204,8 @@ nav_hours_bar = px.bar(
 )
 
 # Location Pie Chart
-nav_hours_pie = px.pie(
-    nav_hours,  # Use the grouped data for the pie chart
+nav_hours_pie1 = px.pie(
+    nav_hours1,  # Use the grouped data for the pie chart
     names="Person filling out this form:",
     values='Activity duration (hours):'  # Show activity duration in hours
 ).update_layout(
@@ -202,10 +223,10 @@ nav_hours_pie = px.pie(
 )
 
 # Table
-nav_table = go.Figure(data=[go.Table(
+nav_table1 = go.Figure(data=[go.Table(
     # columnwidth=[50, 50, 50],  # Adjust the width of the columns
     header=dict(
-        values=list(nav_hours.columns),
+        values=list(nav_hours1.columns),
         fill_color='paleturquoise',
         align='center',
         height=30,  # Adjust the height of the header cells
@@ -213,7 +234,7 @@ nav_table = go.Figure(data=[go.Table(
         font=dict(size=12)  # Adjust font size
     ),
     cells=dict(
-        values=[nav_hours[col] for col in nav_hours.columns],
+        values=[nav_hours1[col] for col in nav_hours1.columns],
         fill_color='lavender',
         align='left',
         height=25,  # Adjust the height of the cells
@@ -222,7 +243,7 @@ nav_table = go.Figure(data=[go.Table(
     )
 )])
 
-nav_table.update_layout(
+nav_table1.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
     height=400,
     # width=1500,  # Set a smaller width to make columns thinner
@@ -230,45 +251,31 @@ nav_table.update_layout(
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
 )
 
-# ---------------------------- MarCom Hours ------------------------------ #
+# --------------------- Navigation Hours 2 --------------------- #
 
-# print(df_mc.columns)
+# Group by 'Person filling out this form:' and sum the 'Activity duration (minutes):'
+nav_hours2 = df_nav2.groupby('Person filling out this form:')['Activity duration (minutes):'].sum().reset_index()
 
-# Index(['Timestamp',
-#        'Which MarCom activity category are you submitting an entry for?',
-#        'Person completing this form:', 'Activity duration (hours):',
-#        'Purpose of the activity (please only list one):',
-#        'Please select the type of product(s):',
-#        'Please provide public information:', 'Please explain event-oriented:',
-#        'Date of Activity', 'Brief activity description:', 'Activity Status',
-#        'Total travel time (minutes):', 'Please provide public information:.1',
-#        'Please explain event-oriented:.1'],
-#       dtype='object')
+nav_hours2['Activity duration (hours):'] = nav_hours2['Activity duration (minutes):'] / 60
 
-# Convert 'Activity duration (hours):' to numeric, coercing errors to NaN
-df_mc['Activity duration (hours):'] = pd.to_numeric(df_mc['Activity duration (hours):'], errors='coerce')
-
-# Group by 'Person completing this form:' and sum the 'Activity duration (hours):'
-mc_hours = df_mc.groupby('Person completing this form:')['Activity duration (hours):'].sum().reset_index()
-
-# Optional: Sort the results by total activity duration (in hours), descending
-mc_hours = mc_hours.sort_values(by='Activity duration (hours):', ascending=False)
+# Optional: Sort the results by total activity duration, descending
+nav_hours2 = nav_hours2.sort_values(by='Activity duration (minutes):', ascending=False)
 
 # Display the grouped DataFrame
-# print(mc_hours)
+# print(activity_duration_grouped)
 
 # Bar Chart for Activity Duration by Person
-mc_hours_bar = px.bar(
-    mc_hours,  # Use the grouped data for the bar chart
-    x="Person completing this form:",  # X-axis as the person completing the form
+nav_hours_bar2 = px.bar(
+    nav_hours2,
+    x="Person filling out this form:",
     y='Activity duration (hours):',  # Now using hours
-    color="Person completing this form:",  # Color by the person completing the form
+    color="Person filling out this form:",
     text='Activity duration (hours):',  # Display the activity duration in hours
 ).update_layout(
     height=450, 
     width=900,
     title=dict(
-        text='Total MarCom Hours by Person',
+        text='Total Navigation Hours by Person',
         x=0.5, 
         font=dict(
             size=25,
@@ -303,6 +310,232 @@ mc_hours_bar = px.bar(
         y=1,  # Position legend at the top
         xanchor="left",  # Anchor legend to the left
         yanchor="top",  # Anchor legend to the top
+        # visible=False  # Ensure the legend is visible
+        visible=True  # Ensure the legend is visible
+    ),
+    hovermode='closest',  # Display only one hover label per trace
+    bargap=0.08,  # Reduce the space between bars
+    bargroupgap=0,  # Reduce space between individual bars in groups
+).update_traces(
+    textposition='auto',  # Show text labels inside bars
+    hovertemplate='<b>Person:</b> %{x}<br><b>Activity Duration:</b> %{y} hours<extra></extra>'  # Fixed hovertemplate
+)
+
+# Location Pie Chart
+nav_hours_pie2 = px.pie(
+    nav_hours2,  # Use the grouped data for the pie chart
+    names="Person filling out this form:",
+    values='Activity duration (hours):'  # Show activity duration in hours
+).update_layout(
+    title='Ratio of Hours by Person',
+    title_x=0.5,
+    font=dict(
+        family='Calibri',
+        size=17,
+        color='black'
+    )
+).update_traces(
+    rotation=90,
+    textinfo='value+percent',
+    hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'  # Updated hovertemplate to show hours
+)
+
+# Table
+nav_table2 = go.Figure(data=[go.Table(
+    # columnwidth=[50, 50, 50],  # Adjust the width of the columns
+    header=dict(
+        values=list(nav_hours2.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,  # Adjust the height of the header cells
+        # line=dict(color='black', width=1),  # Add border to header cells
+        font=dict(size=12)  # Adjust font size
+    ),
+    cells=dict(
+        values=[nav_hours2[col] for col in nav_hours2.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,  # Adjust the height of the cells
+        # line=dict(color='black', width=1),  # Add border to cells
+        font=dict(size=12)  # Adjust font size
+    )
+)])
+
+nav_table2.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
+    height=400,
+    # width=1500,  # Set a smaller width to make columns thinner
+    paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
+    plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
+)
+
+# ---------------------------- MarCom Hours ------------------------------ #
+
+# print(df_mc.columns)
+
+# Index(['Timestamp',
+#        'Which MarCom activity category are you submitting an entry for?',
+#        'Person completing this form:', 'Activity duration (hours):',
+#        'Purpose of the activity (please only list one):',
+#        'Please select the type of product(s):',
+#        'Please provide public information:', 'Please explain event-oriented:',
+#        'Date of Activity', 'Brief activity description:', 'Activity Status',
+#        'Total travel time (minutes):', 'Please provide public information:.1',
+#        'Please explain event-oriented:.1'],
+#       dtype='object')
+
+# Convert 'Activity duration (hours):' to numeric, coercing errors to NaN
+# df_mc1['Activity duration (hours):'] = pd.to_numeric(df_mc1['Activity duration (hours):'], errors='coerce')
+
+# Group by 'Person completing this form:' and sum the 'Activity duration (hours):'
+mc_hours1 = df_mc1.groupby('Person completing this form:')['Hours'].sum().reset_index()
+
+# Optional: Sort the results by total activity duration (in hours), descending
+mc_hours1 = mc_hours1.sort_values(by='Hours', ascending=False)
+
+# Bar Chart for Activity Duration by Person
+mc_hours_bar1 = px.bar(
+    mc_hours1,
+    x="Person completing this form:",
+    y='Hours',
+    color="Person completing this form:",
+    text='Hours',
+).update_layout(
+    height=450, 
+    width=900,
+    title=dict(
+        text='Total MarCom Hours by Person (First Half)',
+        x=0.5, 
+        font=dict(size=25, family='Calibri', color='black'),
+    ),
+    font=dict(family='Calibri', size=18, color='black'),
+    xaxis=dict(
+        tickangle=-20,
+        tickfont=dict(size=18),
+        title=dict(text="Person", font=dict(size=20)),
+        showticklabels=True
+    ),
+    yaxis=dict(
+        title=dict(text='Hours', font=dict(size=20)),
+    ),
+    legend=dict(
+        title='Person',
+        orientation="v",
+        x=1.05,
+        y=1,
+        xanchor="left",
+        yanchor="top",
+        visible=True
+    ),
+    hovermode='closest',
+    bargap=0.08,
+    bargroupgap=0,
+).update_traces(
+    textposition='auto',
+    hovertemplate='<b>Person:</b> %{x}<br><b>Activity Duration:</b> %{y} hours<extra></extra>'
+)
+
+# Pie Chart for Activity Duration by Person
+mc_hours_pie1 = px.pie(
+    mc_hours1,
+    names="Person completing this form:",
+    values='Hours'
+).update_layout(
+    title='Ratio of MarCom Hours by Person (First Half)',
+    title_x=0.5,
+    font=dict(family='Calibri', size=17, color='black')
+).update_traces(
+    rotation=90,
+    textinfo='value+percent',
+    hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'
+)
+
+# Table
+mc_table1 = go.Figure(data=[go.Table(
+    header=dict(
+        values=list(mc_hours1.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,
+        font=dict(size=12)
+    ),
+    cells=dict(
+        values=[mc_hours1[col] for col in mc_hours1.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,
+        font=dict(size=12)
+    )
+)])
+
+mc_table1.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),
+    height=400,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)'
+)
+
+
+# ---------------------------- MarCom Hours ------------------------------ #
+
+# Convert 'Activity duration (hours):' to numeric, coercing errors to NaN
+# df_mc2['Activity duration (hours):'] = pd.to_numeric(df_mc2['Activity duration (hours):'], errors='coerce')
+
+# Group by 'Person completing this form:' and sum the 'Activity duration (hours):'
+mc_hours2 = df_mc2.groupby('Person completing this form:')['Hours'].sum().reset_index()
+
+# Optional: Sort the results by total activity duration (in hours), descending
+mc_hours2 = mc_hours2.sort_values(by='Hours', ascending=False)
+
+# Display the grouped DataFrame
+# print(mc_hours)
+
+# Bar Chart for Activity Duration by Person
+mc_hours_bar2 = px.bar(
+    mc_hours2,  # Use the grouped data for the bar chart
+    x="Person completing this form:",  # X-axis as the person completing the form
+    y='Hours',  # Now using hours
+    color="Person completing this form:",  # Color by the person completing the form
+    text='Hours',  # Display the activity duration in hours
+).update_layout(
+    height=450, 
+    width=900,
+    title=dict(
+        text='Total MarCom Hours by Person',
+        x=0.5, 
+        font=dict(
+            size=25,
+            family='Calibri',
+            color='black',
+        )
+    ),
+    font=dict(
+        family='Calibri',
+        size=18,
+        color='black'
+    ),
+    xaxis=dict(
+        tickangle=-20,  # Rotate x-axis labels for better readability
+        tickfont=dict(size=18),  # Adjust font size for the tick labels
+        title=dict(
+            text="Person",
+            font=dict(size=20),  # Font size for the title
+        ),
+        showticklabels=True  # Show x-tick labels
+    ),
+    yaxis=dict(
+        title=dict(
+            text='Hours',
+            font=dict(size=20),  # Font size for the title
+        ),
+    ),
+    legend=dict(
+        title='Person',
+        orientation="v",  # Vertical legend
+        x=1.05,  # Position legend to the right
+        y=1,  # Position legend at the top
+        xanchor="left",  # Anchor legend to the left
+        yanchor="top",  # Anchor legend to the top
         # visible=True  # Ensure the legend is visible
         visible=True  # Ensure the legend is visible
     ),
@@ -315,10 +548,10 @@ mc_hours_bar = px.bar(
 )
 
 # Pie Chart for Activity Duration by Person
-mc_hours_pie = px.pie(
-    mc_hours,  # Use the grouped data for the pie chart
+mc_hours_pie2 = px.pie(
+    mc_hours2,  # Use the grouped data for the pie chart
     names="Person completing this form:",  # Names as the person completing the form
-    values='Activity duration (hours):'  # Show activity duration in hours
+    values='Hours'  # Show activity duration in hours
 ).update_layout(
     title='Ratio of MarCom Hours by Person',
     title_x=0.5,
@@ -334,10 +567,10 @@ mc_hours_pie = px.pie(
 )
 
 # Table
-mc_table = go.Figure(data=[go.Table(
+mc_table2 = go.Figure(data=[go.Table(
     # columnwidth=[50, 50, 50],  # Adjust the width of the columns
     header=dict(
-        values=list(mc_hours.columns),
+        values=list(mc_hours2.columns),
         fill_color='paleturquoise',
         align='center',
         height=30,  # Adjust the height of the header cells
@@ -345,7 +578,7 @@ mc_table = go.Figure(data=[go.Table(
         font=dict(size=12)  # Adjust font size
     ),
     cells=dict(
-        values=[mc_hours[col] for col in mc_hours.columns],
+        values=[mc_hours2[col] for col in mc_hours2.columns],
         fill_color='lavender',
         align='left',
         height=25,  # Adjust the height of the cells
@@ -354,7 +587,7 @@ mc_table = go.Figure(data=[go.Table(
     )
 )])
 
-mc_table.update_layout(
+mc_table2.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
     height=400,
     # width=1500,  # Set a smaller width to make columns thinner
@@ -374,23 +607,117 @@ mc_table.update_layout(
 #        'Number engaged at Community Outreach Activity:'],
 
 # Convert 'Activity Duration (minutes):' to numeric, forcing errors to NaN (in case of non-numeric data)
-df_eng['Activity Duration (minutes):'] = pd.to_numeric(df_eng['Activity Duration (minutes):'], errors='coerce')
+# Convert 'Activity Duration (minutes):' to numeric, coercing errors to NaN
+df_eng1['Activity Duration (minutes):'] = pd.to_numeric(df_eng1['Activity Duration (minutes):'], errors='coerce')
 
 # Group by 'Person submitting this form:' and sum the 'Activity Duration (minutes):'
-eng_hours = df_eng.groupby('Person submitting this form:')['Activity Duration (minutes):'].sum().reset_index()
+eng_hours1 = df_eng1.groupby('Person submitting this form:')['Activity Duration (minutes):'].sum().reset_index()
 
-# Convert minutes to hours by dividing by 60
-eng_hours['Activity Duration (hours):'] = eng_hours['Activity Duration (minutes):'] / 60
+# Convert minutes to hours
+eng_hours1['Activity Duration (hours):'] = eng_hours1['Activity Duration (minutes):'] / 60
 
-# Optional: Sort the results by total activity duration (in hours), descending
-eng_hours = eng_hours.sort_values(by='Activity Duration (hours):', ascending=False)
-
-# Display the grouped DataFrame
-# print(eng_hours)
+# Sort the results by total activity duration (in hours), descending
+eng_hours1 = eng_hours1.sort_values(by='Activity Duration (hours):', ascending=False)
 
 # Bar Chart for Activity Duration by Person
-eng_hours_bar = px.bar(
-    eng_hours,
+eng_hours_bar1 = px.bar(
+    eng_hours1,
+    x="Person submitting this form:",
+    y='Activity Duration (hours):',
+    color="Person submitting this form:",
+    text='Activity Duration (hours):',
+).update_layout(
+    height=450, 
+    width=900,
+    title=dict(
+        text='Total Engagement Hours by Person (First Half)',
+        x=0.5, 
+        font=dict(size=25, family='Calibri', color='black'),
+    ),
+    font=dict(family='Calibri', size=18, color='black'),
+    xaxis=dict(
+        tickangle=-20,
+        tickfont=dict(size=18),
+        title=dict(text="Person", font=dict(size=20)),
+        showticklabels=True
+    ),
+    yaxis=dict(
+        title=dict(text='Activity Duration (hours)', font=dict(size=20)),
+    ),
+    legend=dict(
+        title='Person',
+        orientation="v",
+        x=1.05,
+        y=1,
+        xanchor="left",
+        yanchor="top",
+        visible=True
+    ),
+    hovermode='closest',
+    bargap=0.08,
+    bargroupgap=0,
+).update_traces(
+    textposition='auto',
+    hovertemplate='<b>Person:</b> %{x}<br><b>Activity Duration:</b> %{y} hours<extra></extra>'
+)
+
+# Pie Chart for Activity Duration Ratio by Person
+eng_hours_pie1 = px.pie(
+    eng_hours1,
+    names="Person submitting this form:",
+    values='Activity Duration (hours):'
+).update_layout(
+    title='Ratio of Engagement Hours by Person (First Half)',
+    title_x=0.5,
+    font=dict(family='Calibri', size=17, color='black')
+).update_traces(
+    rotation=90,
+    textinfo='value+percent',
+    hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'
+)
+
+# Table
+eng_table1 = go.Figure(data=[go.Table(
+    header=dict(
+        values=list(eng_hours1.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,
+        font=dict(size=12)
+    ),
+    cells=dict(
+        values=[eng_hours1[col] for col in eng_hours1.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,
+        font=dict(size=12)
+    )
+)])
+
+eng_table1.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),
+    height=400,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)'
+)
+
+
+# ----------------- Engagement Part 2 --------------------- #
+
+df_eng2['Activity Duration (minutes):'] = pd.to_numeric(df_eng2['Activity Duration (minutes):'], errors='coerce')
+
+# Group by 'Person submitting this form:' and sum the 'Activity Duration (minutes):'
+eng_hours2 = df_eng2.groupby('Person submitting this form:')['Activity Duration (minutes):'].sum().reset_index()
+
+# Convert minutes to hours by dividing by 60
+eng_hours2['Activity Duration (hours):'] = eng_hours2['Activity Duration (minutes):'] / 60
+
+# Optional: Sort the results by total activity duration (in hours), descending
+eng_hours2 = eng_hours2.sort_values(by='Activity Duration (hours):', ascending=False)
+
+# Bar Chart for Activity Duration by Person
+eng_hours_bar2 = px.bar(
+    eng_hours2,
     x="Person submitting this form:",  # X-axis: Person
     y='Activity Duration (hours):',  # Y-axis: Activity Duration in hours
     color="Person submitting this form:",  # Color by Person
@@ -435,7 +762,6 @@ eng_hours_bar = px.bar(
         xanchor="left",  # Anchor legend to the left
         yanchor="top",  # Anchor legend to the top
         visible=True  # Ensure the legend is visible
-        # visible=False  # Ensure the legend is visible
     ),
     hovermode='closest',  # Display only one hover label per trace
     bargap=0.08,  # Reduce the space between bars
@@ -446,8 +772,8 @@ eng_hours_bar = px.bar(
 )
 
 # Pie Chart for Activity Duration Ratio by Person
-eng_hours_pie = px.pie(
-    eng_hours,  # Use the grouped data for the pie chart
+eng_hours_pie2 = px.pie(
+    eng_hours2,  # Use the grouped data for the pie chart
     names="Person submitting this form:",  # Person names as the slice labels
     values='Activity Duration (hours):'  # Use activity duration in hours as values
 ).update_layout(
@@ -465,30 +791,26 @@ eng_hours_pie = px.pie(
 )
 
 # Table
-eng_table = go.Figure(data=[go.Table(
-    # columnwidth=[50, 50, 50],  # Adjust the width of the columns
+eng_table2 = go.Figure(data=[go.Table(
     header=dict(
-        values=list(eng_hours.columns),
+        values=list(eng_hours2.columns),
         fill_color='paleturquoise',
         align='center',
         height=30,  # Adjust the height of the header cells
-        # line=dict(color='black', width=1),  # Add border to header cells
         font=dict(size=12)  # Adjust font size
     ),
     cells=dict(
-        values=[eng_hours[col] for col in eng_hours.columns],
+        values=[eng_hours2[col] for col in eng_hours2.columns],
         fill_color='lavender',
         align='left',
         height=25,  # Adjust the height of the cells
-        # line=dict(color='black', width=1),  # Add border to cells
         font=dict(size=12)  # Adjust font size
     )
 )])
 
-eng_table.update_layout(
+eng_table2.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
     height=400,
-    # width=1500,  # Set a smaller width to make columns thinner
     paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
 )
@@ -545,24 +867,120 @@ eng_table.update_layout(
        
 # Convert 'How much time did you spend on these tasks? (minutes)' to numeric, forcing errors to NaN (in case of non-numeric data)
 # Convert 'How much time did you spend on these tasks? (minutes)' to numeric, forcing errors to NaN (in case of non-numeric data)
-df_it['How much time did you spend on these tasks? (minutes)'] = pd.to_numeric(df_it['How much time did you spend on these tasks? (minutes)'], errors='coerce')
+# Convert 'Activity Duration (hours):' to numeric, coercing errors to NaN
+# df_it1['Activity Duration (hours):'] = pd.to_numeric(df_it1['Activity Duration (hours):'], errors='coerce')
+
+# Group by 'Person completing this form:' and sum the 'Activity Duration (hours):'
+it_hours1 = df_it1.groupby('Person completing this form:')['Activity Duration (hours):'].sum().reset_index()
+
+# Sort the results by total activity duration (in hours), descending
+it_hours1 = it_hours1.sort_values(by='Activity Duration (hours):', ascending=False)
+
+# Bar Chart for IT Activity Duration by Person
+it_hours_bar1 = px.bar(
+    it_hours1,
+    x="Person completing this form:",
+    y='Activity Duration (hours):',
+    color="Person completing this form:",
+    text='Activity Duration (hours):',
+).update_layout(
+    height=450, 
+    width=900,
+    title=dict(
+        text='Total IT Hours by Person (First Half)',
+        x=0.5, 
+        font=dict(size=25, family='Calibri', color='black'),
+    ),
+    font=dict(family='Calibri', size=18, color='black'),
+    xaxis=dict(
+        tickangle=-20,
+        tickfont=dict(size=18),
+        title=dict(text="Person", font=dict(size=20)),
+        showticklabels=True
+    ),
+    yaxis=dict(
+        title=dict(text='Activity Duration (hours)', font=dict(size=20)),
+    ),
+    legend=dict(
+        title='Person',
+        orientation="v",
+        x=1.05,
+        y=1,
+        xanchor="left",
+        yanchor="top",
+        visible=True
+    ),
+    hovermode='closest',
+    bargap=0.08,
+    bargroupgap=0,
+).update_traces(
+    textposition='auto',
+    hovertemplate='<b>Person:</b> %{x}<br><b>Activity Duration:</b> %{y} hours<extra></extra>'
+)
+
+# Pie Chart for IT Activity Duration Ratio by Person
+it_hours_pie1 = px.pie(
+    it_hours1,
+    names="Person completing this form:",
+    values='Activity Duration (hours):'
+).update_layout(
+    title='Ratio of IT Hours by Person (First Half)',
+    title_x=0.5,
+    font=dict(family='Calibri', size=17, color='black')
+).update_traces(
+    rotation=90,
+    textinfo='value+percent',
+    hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'
+)
+
+# Table
+it_table1 = go.Figure(data=[go.Table(
+    header=dict(
+        values=list(it_hours1.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,
+        font=dict(size=12)
+    ),
+    cells=dict(
+        values=[it_hours1[col] for col in it_hours1.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,
+        font=dict(size=12)
+    )
+)])
+
+it_table1.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),
+    height=400,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)'
+)
+
+
+# ---------------- IT Part 2 ------------ #
+
+# Convert 'Activity Duration (hours):' to numeric, coercing errors to NaN
+# df_it1['Hours'] = pd.to_numeric(df_it1['Activity Duration (hours):'], errors='coerce')
 
 # Group by 'Person completing this form:' and sum the 'How much time did you spend on these tasks? (minutes)' column
-it_hours = df_it.groupby('Person completing this form:')['How much time did you spend on these tasks? (minutes)'].sum().reset_index()
+it_hours2 = df_it2.groupby('Person completing this form:')['Activity Duration (hours):'].sum().reset_index()
 
 # Convert minutes to hours by dividing by 60
-it_hours['Activity Duration (hours):'] = it_hours['How much time did you spend on these tasks? (minutes)'] / 60
+# it_hours2['Activity Duration (hours):'] = it_hours2['How much time did you spend on these tasks? (minutes)'] / 60
 
 # Optional: Sort the results by total activity duration (in hours), descending
-it_hours = it_hours.sort_values(by='Activity Duration (hours):', ascending=False)
+it_hours2 = it_hours2.sort_values(by='Activity Duration (hours):', ascending=False)
 
+# print(df_it2)
 
 # Display the grouped DataFrame
 # print(activity_duration_grouped_it)
 
 # Bar Chart for IT Activity Duration by Person
-it_hours_bar = px.bar(
-    it_hours,  # Use the 'it_hours' DataFrame
+it_hours_bar2 = px.bar(
+    it_hours2,  # Use the 'it_hours2' DataFrame
     x="Person completing this form:",  # X-axis: Person
     y='Activity Duration (hours):',  # Y-axis: Activity Duration in hours
     color="Person completing this form:",  # Color by Person
@@ -618,8 +1036,8 @@ it_hours_bar = px.bar(
 )
 
 # Pie Chart for IT Activity Duration Ratio by Person
-it_hours_pie = px.pie(
-    it_hours,  # Use the 'it_hours' DataFrame
+it_hours_pie2 = px.pie(
+    it_hours2,  # Use the 'it_hours2' DataFrame
     names="Person completing this form:",  # Person names as the slice labels
     values='Activity Duration (hours):'  # Use activity duration in hours as values
 ).update_layout(
@@ -637,10 +1055,10 @@ it_hours_pie = px.pie(
 )
 
 # Table
-it_table = go.Figure(data=[go.Table(
+it_table2 = go.Figure(data=[go.Table(
     # columnwidth=[50, 50, 50],  # Adjust the width of the columns
     header=dict(
-        values=list(it_hours.columns),
+        values=list(it_hours2.columns),
         fill_color='paleturquoise',
         align='center',
         height=30,  # Adjust the height of the header cells
@@ -648,7 +1066,7 @@ it_table = go.Figure(data=[go.Table(
         font=dict(size=12)  # Adjust font size
     ),
     cells=dict(
-        values=[it_hours[col] for col in it_hours.columns],
+        values=[it_hours2[col] for col in it_hours2.columns],
         fill_color='lavender',
         align='left',
         height=25,  # Adjust the height of the cells
@@ -657,7 +1075,7 @@ it_table = go.Figure(data=[go.Table(
     )
 )])
 
-it_table.update_layout(
+it_table2.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
     height=400,
     # width=1500,  # Set a smaller width to make columns thinner
@@ -701,7 +1119,7 @@ html.Div(
             className='graph3',
             children=[
                 dcc.Graph(
-                    figure=nav_hours_bar
+                    figure=nav_hours_bar1
                 )
             ]
         ),
@@ -709,7 +1127,7 @@ html.Div(
             className='graph4',
             children=[
                 dcc.Graph(
-                    figure=nav_hours_pie
+                    figure=nav_hours_pie1
                 )
             ]
         )
@@ -723,7 +1141,7 @@ html.Div(
             className='graph3',
             children=[
                 dcc.Graph(
-                    figure=mc_hours_bar
+                    figure=mc_hours_bar1
                 )
             ]
         ),
@@ -731,7 +1149,7 @@ html.Div(
             className='graph4',
             children=[
                 dcc.Graph(
-                    figure=mc_hours_pie
+                    figure=mc_hours_pie1
                 )
             ]
         )
@@ -745,7 +1163,7 @@ html.Div(
             className='graph3',
             children=[
                 dcc.Graph(
-                    figure=eng_hours_bar
+                    figure=eng_hours_bar1
                 )
             ]
         ),
@@ -753,13 +1171,13 @@ html.Div(
             className='graph4',
             children=[
                 dcc.Graph(
-                    figure=eng_hours_pie
+                    figure=eng_hours_pie1
                 )
             ]
         )
     ]
 ),
-        
+
 html.Div(
     className='row2',
     children=[
@@ -767,7 +1185,7 @@ html.Div(
             className='graph3',
             children=[
                 dcc.Graph(
-                    figure=nav_table
+                    figure=it_hours_bar1
                 )
             ]
         ),
@@ -775,112 +1193,327 @@ html.Div(
             className='graph4',
             children=[
                 dcc.Graph(
-                    figure=mc_table
+                    figure=it_hours_pie1
                 )
             ]
         )
     ]
 ),
         
+# ROW 2
 html.Div(
     className='row2',
     children=[
         html.Div(
             className='graph3',
-            children=[
-                dcc.Graph(
-                    figure=eng_table
-                )
-            ]
-        ),
-        html.Div(
-            className='graph4',
-            children=[
-                dcc.Graph(
-                    figure=it_table
-                )
-            ]
-        )
-    ]
-),
-        
-html.Div(
-    className='row2',
-    children=[
-        html.Div(
-            className='graph3',
-            children=[
-                dcc.Graph(
-                    figure=it_hours_bar
-                )
-            ]
-        ),
-        html.Div(
-            className='graph4',
-            children=[
-                dcc.Graph(
-                    figure=it_hours_pie
-                )
-            ]
-        )
-    ]
-),
-        
-        html.Div(
-            className='row3',
             children=[
                 html.Div(
-                    className='graph33',
+                    className='table',
                     children=[
-                        dcc.Graph(
-                            # figure=mc_bar
+                        html.H1(
+                            className='table-title',
+                            children='Navigation Hours Table'
                         )
                     ]
                 ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            className='data',
+                            figure=nav_table1
+                        )
+                    ]
+                )
             ]
-        ),   
+        ),
+        html.Div(
+            className='graph4',
+            children=[                
+              html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='MarCom Hours Table'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            figure=mc_table1
+                        )
+                    ]
+                )
+   
+            ]
+        )
+    ]
+),
+        
+# ROW 2
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='Engagement Hours Table'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            className='data',
+                            figure=eng_table1
+                        )
+                    ]
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[                
+              html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='IT Hours Table'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            figure=it_table1
+                        )
+                    ]
+                )
+   
+            ]
+        )
+    ]
+),
+    
+# ====================================================================================== # 
 
         html.Div(
-            className='row3',
-            children=[
+            className='divv', 
+            children=[ 
+                html.H1('BMHC Employee Hours', className='title'),
+                html.H1('02/14/2025 - 02/28/2025', className='title2'),
                 html.Div(
-                    className='graph33',
+                    className='btn-box', 
                     children=[
-                        dcc.Graph(
-                            # figure=it_hours_bar
-                        )
                     ]
-                ),
+                )
             ]
-        ),   
-
-        html.Div(
-            className='row3',
-            children=[
-                html.Div(
-                    className='graph33',
-                    children=[
-                        dcc.Graph(
-                            # figure=it_hours_pie
-                        )
-                    ]
-                ),
-            ]
-        ),   
+        ),
         
-                # html.Div(
-        #     className='row3',
-        #     children=[
-        #         html.Div(
-        #             className='graph33',
-        #             children=[
-        #                 dcc.Graph(
-        #                     figure=nav_hours_bar
-        #                 )
-        #             ]
-        #         ),
-        #     ]
-        # ),   
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                dcc.Graph(
+                    figure=nav_hours_bar2
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[
+                dcc.Graph(
+                    figure=nav_hours_pie2
+                )
+            ]
+        )
+    ]
+),
+        
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                dcc.Graph(
+                    figure=mc_hours_bar2
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[
+                dcc.Graph(
+                    figure=mc_hours_pie2
+                )
+            ]
+        )
+    ]
+),
+        
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                dcc.Graph(
+                    figure=eng_hours_bar2
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[
+                dcc.Graph(
+                    figure=eng_hours_pie2
+                )
+            ]
+        )
+    ]
+),
+
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                dcc.Graph(
+                    figure=it_hours_bar2
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[
+                dcc.Graph(
+                    figure=it_hours_pie2
+                )
+            ]
+        )
+    ]
+),
+        
+# ROW 2
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='Navigation Hours Table'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            className='data',
+                            figure=nav_table2
+                        )
+                    ]
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[                
+              html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='MarCom Hours Table'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            figure=mc_table2
+                        )
+                    ]
+                )
+   
+            ]
+        )
+    ]
+),
+        
+# ROW 2
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='Engagement Hours Table'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            className='data',
+                            figure=eng_table2
+                        )
+                    ]
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[                
+              html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='IT Hours Table'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            figure=it_table2
+                        )
+                    ]
+                )
+   
+            ]
+        )
+    ]
+),
 ])
 
 print(f"Serving Flask app '{current_file}'! 🚀")
@@ -890,9 +1523,24 @@ if __name__ == '__main__':
                 #    False)
 # =================================== Updated Database ================================= #
 
-# updated_path = 'data/bmhc_q4_2024_cleaned.xlsx'
+# updated_path = 'data/nav_hours_cleaned.xlsx'
 # data_path = os.path.join(script_dir, updated_path)
-# df.to_excel(data_path, index=False)
+# nav_hours.to_excel(data_path, index=False)
+# print(f"DataFrame saved to {data_path}")
+
+# updated_path = 'data/mc_hours_cleaned.xlsx'
+# data_path = os.path.join(script_dir, updated_path)
+# mc_hours.to_excel(data_path, index=False)
+# print(f"DataFrame saved to {data_path}")
+
+# updated_path = 'data/eng_hours_cleaned.xlsx'
+# data_path = os.path.join(script_dir, updated_path)
+# eng_hours.to_excel(data_path, index=False)
+# print(f"DataFrame saved to {data_path}")
+
+# updated_path = 'data/it_hours_cleaned.xlsx'
+# data_path = os.path.join(script_dir, updated_path)
+# it_hours.to_excel(data_path, index=False)
 # print(f"DataFrame saved to {data_path}")
 
 # updated_path1 = 'data/service_tracker_q4_2024_cleaned.csv'
