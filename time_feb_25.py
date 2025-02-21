@@ -53,12 +53,6 @@ df_eng['Date of Activity'] = pd.to_datetime(df_eng['Date of Activity'], errors='
 df_mc['Date of Activity'] = pd.to_datetime(df_mc['Date of Activity'], errors='coerce')
 df_it['Date of Activity'] = pd.to_datetime(df_it['Date of Activity'], errors='coerce')
 
-# Convert 'Date of Activity' to datetime format
-# df_nav['Date of Activity'] = pd.to_datetime(df_nav['Date of Activity'], errors='coerce')
-# df_eng['Date of Activity'] = pd.to_datetime(df_eng['Date of Activity'], errors='coerce')
-# df_mc['Date of Activity'] = pd.to_datetime(df_mc['Date of Activity'], errors='coerce')
-# df_it['Date of Activity'] = pd.to_datetime(df_it['Date of Activity'], errors='coerce')
-
 # FIRST HALF
 df_nav1 = df_nav[(df_nav['Date of Activity'] >= "2025-02-01") & (df_nav['Date of Activity'] <= "2025-02-14")]
 df_eng1 = df_eng[(df_eng['Date of Activity'] >= "2025-02-01") & (df_eng['Date of Activity'] <= "2025-02-14")]
@@ -91,7 +85,7 @@ for df in [df_eng1, df_eng2, df_nav1, df_nav2]:
 
 # print(df.head(10))
 # print('Total Marketing Events: ', len(df))
-# print('Column Names: \n', df.columns)
+# print('Column Names: \n', df_nav1.columns)
 # print('DF Shape:', df.shape)
 # print('Dtypes: \n', df.dtypes)
 # print('Info:', df.info())
@@ -136,12 +130,12 @@ for df in [df_eng1, df_eng2, df_nav1, df_nav2]:
 
 # Group by 'Person filling out this form:' and sum the 'Activity duration (minutes):'
 # Group by 'Person filling out this form:' and sum the 'Activity duration (minutes):'
-nav_hours1 = df_nav1.groupby('Person filling out this form:')['Activity duration (minutes):'].sum().reset_index()
+nav_hours1 = df_nav1.groupby('Person filling out this form:')['Hours'].sum().reset_index()
 
-nav_hours1['Activity duration (hours):'] = nav_hours1['Activity duration (minutes):'] / 60
+# nav_hours1['Activity duration (hours):'] = nav_hours1['Activity duration (minutes):'] / 60
 
 # Optional: Sort the results by total activity duration, descending
-nav_hours1 = nav_hours1.sort_values(by='Activity duration (minutes):', ascending=False)
+# nav_hours1 = nav_hours1.sort_values(by='Hours', ascending=False)
 
 # Display the grouped DataFrame
 # print(activity_duration_grouped)
@@ -150,14 +144,14 @@ nav_hours1 = nav_hours1.sort_values(by='Activity duration (minutes):', ascending
 nav_hours_bar1 = px.bar(
     nav_hours1,
     x="Person filling out this form:",
-    y='Activity duration (hours):',  # Now using hours
+    y='Hours',  # Now using hours
     color="Person filling out this form:",
-    text='Activity duration (hours):',  # Display the activity duration in hours
+    text='Hours', 
 ).update_layout(
     height=450, 
     width=900,
     title=dict(
-        text='Total Navigation Hours by Person',
+        text='Navigation Hours by Person',
         x=0.5, 
         font=dict(
             size=25,
@@ -181,7 +175,7 @@ nav_hours_bar1 = px.bar(
     ),
     yaxis=dict(
         title=dict(
-            text='Activity Duration (hours)',
+            text='Hours',
             font=dict(size=20),  # Font size for the title
         ),
     ),
@@ -207,7 +201,7 @@ nav_hours_bar1 = px.bar(
 nav_hours_pie1 = px.pie(
     nav_hours1,  # Use the grouped data for the pie chart
     names="Person filling out this form:",
-    values='Activity duration (hours):'  # Show activity duration in hours
+    values='Hours'  # Show activity duration in hours
 ).update_layout(
     title='Ratio of Hours by Person',
     title_x=0.5,
@@ -254,12 +248,12 @@ nav_table1.update_layout(
 # --------------------- Navigation Hours 2 --------------------- #
 
 # Group by 'Person filling out this form:' and sum the 'Activity duration (minutes):'
-nav_hours2 = df_nav2.groupby('Person filling out this form:')['Activity duration (minutes):'].sum().reset_index()
+nav_hours2 = df_nav2.groupby('Person filling out this form:')['Hours'].sum().reset_index()
 
-nav_hours2['Activity duration (hours):'] = nav_hours2['Activity duration (minutes):'] / 60
+# nav_hours2['Activity duration (hours):'] = nav_hours2['Activity duration (minutes):'] / 60
 
 # Optional: Sort the results by total activity duration, descending
-nav_hours2 = nav_hours2.sort_values(by='Activity duration (minutes):', ascending=False)
+# nav_hours2 = nav_hours2.sort_values(by='Hours', ascending=False)
 
 # Display the grouped DataFrame
 # print(activity_duration_grouped)
@@ -268,14 +262,14 @@ nav_hours2 = nav_hours2.sort_values(by='Activity duration (minutes):', ascending
 nav_hours_bar2 = px.bar(
     nav_hours2,
     x="Person filling out this form:",
-    y='Activity duration (hours):',  # Now using hours
+    y='Hours',  # Now using hours
     color="Person filling out this form:",
-    text='Activity duration (hours):',  # Display the activity duration in hours
+    text='Hours',  # Display the activity duration in hours
 ).update_layout(
     height=450, 
     width=900,
     title=dict(
-        text='Total Navigation Hours by Person',
+        text='Navigation Hours by Person',
         x=0.5, 
         font=dict(
             size=25,
@@ -299,7 +293,7 @@ nav_hours_bar2 = px.bar(
     ),
     yaxis=dict(
         title=dict(
-            text='Activity Duration (hours)',
+            text='Hours',
             font=dict(size=20),  # Font size for the title
         ),
     ),
@@ -325,7 +319,7 @@ nav_hours_bar2 = px.bar(
 nav_hours_pie2 = px.pie(
     nav_hours2,  # Use the grouped data for the pie chart
     names="Person filling out this form:",
-    values='Activity duration (hours):'  # Show activity duration in hours
+    values='Hours'  # Show activity duration in hours
 ).update_layout(
     title='Ratio of Hours by Person',
     title_x=0.5,
@@ -608,29 +602,29 @@ mc_table2.update_layout(
 
 # Convert 'Activity Duration (minutes):' to numeric, forcing errors to NaN (in case of non-numeric data)
 # Convert 'Activity Duration (minutes):' to numeric, coercing errors to NaN
-df_eng1['Activity Duration (minutes):'] = pd.to_numeric(df_eng1['Activity Duration (minutes):'], errors='coerce')
+# df_eng1['Activity Duration (minutes):'] = pd.to_numeric(df_eng1['Activity Duration (minutes):'], errors='coerce')
 
 # Group by 'Person submitting this form:' and sum the 'Activity Duration (minutes):'
-eng_hours1 = df_eng1.groupby('Person submitting this form:')['Activity Duration (minutes):'].sum().reset_index()
+eng_hours1 = df_eng1.groupby('Person submitting this form:')['Hours'].sum().reset_index()
 
 # Convert minutes to hours
-eng_hours1['Activity Duration (hours):'] = eng_hours1['Activity Duration (minutes):'] / 60
+# eng_hours1['Activity Duration (hours):'] = eng_hours1['Activity Duration (minutes):'] / 60
 
 # Sort the results by total activity duration (in hours), descending
-eng_hours1 = eng_hours1.sort_values(by='Activity Duration (hours):', ascending=False)
+# eng_hours1 = eng_hours1.sort_values(by='Hours', ascending=False)
 
 # Bar Chart for Activity Duration by Person
 eng_hours_bar1 = px.bar(
     eng_hours1,
     x="Person submitting this form:",
-    y='Activity Duration (hours):',
+    y='Hours',
     color="Person submitting this form:",
-    text='Activity Duration (hours):',
+    text='Hours',
 ).update_layout(
     height=450, 
     width=900,
     title=dict(
-        text='Total Engagement Hours by Person (First Half)',
+        text='Engagement Hours by Person',
         x=0.5, 
         font=dict(size=25, family='Calibri', color='black'),
     ),
@@ -642,7 +636,7 @@ eng_hours_bar1 = px.bar(
         showticklabels=True
     ),
     yaxis=dict(
-        title=dict(text='Activity Duration (hours)', font=dict(size=20)),
+        title=dict(text='Hours', font=dict(size=20)),
     ),
     legend=dict(
         title='Person',
@@ -665,9 +659,9 @@ eng_hours_bar1 = px.bar(
 eng_hours_pie1 = px.pie(
     eng_hours1,
     names="Person submitting this form:",
-    values='Activity Duration (hours):'
+    values='Hours'
 ).update_layout(
-    title='Ratio of Engagement Hours by Person (First Half)',
+    title='Ratio of Engagement Hours by Person',
     title_x=0.5,
     font=dict(family='Calibri', size=17, color='black')
 ).update_traces(
@@ -704,29 +698,29 @@ eng_table1.update_layout(
 
 # ----------------- Engagement Part 2 --------------------- #
 
-df_eng2['Activity Duration (minutes):'] = pd.to_numeric(df_eng2['Activity Duration (minutes):'], errors='coerce')
+# df_eng2['Hours'] = pd.to_numeric(df_eng2['Hours'], errors='coerce')
 
 # Group by 'Person submitting this form:' and sum the 'Activity Duration (minutes):'
-eng_hours2 = df_eng2.groupby('Person submitting this form:')['Activity Duration (minutes):'].sum().reset_index()
+eng_hours2 = df_eng2.groupby('Person submitting this form:')['Hours'].sum().reset_index()
 
 # Convert minutes to hours by dividing by 60
-eng_hours2['Activity Duration (hours):'] = eng_hours2['Activity Duration (minutes):'] / 60
+# eng_hours2['Hours'] = eng_hours2['Hours'] / 60
 
 # Optional: Sort the results by total activity duration (in hours), descending
-eng_hours2 = eng_hours2.sort_values(by='Activity Duration (hours):', ascending=False)
+eng_hours2 = eng_hours2.sort_values(by='Hours', ascending=False)
 
 # Bar Chart for Activity Duration by Person
 eng_hours_bar2 = px.bar(
     eng_hours2,
     x="Person submitting this form:",  # X-axis: Person
-    y='Activity Duration (hours):',  # Y-axis: Activity Duration in hours
+    y='Hours',  # Y-axis: Activity Duration in hours
     color="Person submitting this form:",  # Color by Person
-    text='Activity Duration (hours):',  # Display activity duration in hours as text
+    text='Hours',  # Display activity duration in hours as text
 ).update_layout(
     height=450, 
     width=900,
     title=dict(
-        text='Total Engagement Hours by Person',
+        text='Engagement Hours by Person',
         x=0.5, 
         font=dict(
             size=25,
@@ -750,7 +744,7 @@ eng_hours_bar2 = px.bar(
     ),
     yaxis=dict(
         title=dict(
-            text='Activity Duration (hours)',
+            text='Hours',
             font=dict(size=20),  # Font size for the title
         ),
     ),
@@ -775,7 +769,7 @@ eng_hours_bar2 = px.bar(
 eng_hours_pie2 = px.pie(
     eng_hours2,  # Use the grouped data for the pie chart
     names="Person submitting this form:",  # Person names as the slice labels
-    values='Activity Duration (hours):'  # Use activity duration in hours as values
+    values='Hours'  # Use activity duration in hours as values
 ).update_layout(
     title='Ratio of Engagement Hours by Person',
     title_x=0.5,
@@ -871,23 +865,23 @@ eng_table2.update_layout(
 # df_it1['Activity Duration (hours):'] = pd.to_numeric(df_it1['Activity Duration (hours):'], errors='coerce')
 
 # Group by 'Person completing this form:' and sum the 'Activity Duration (hours):'
-it_hours1 = df_it1.groupby('Person completing this form:')['Activity Duration (hours):'].sum().reset_index()
+it_hours1 = df_it1.groupby('Person completing this form:')['Hours'].sum().reset_index()
 
 # Sort the results by total activity duration (in hours), descending
-it_hours1 = it_hours1.sort_values(by='Activity Duration (hours):', ascending=False)
+# it_hours1 = it_hours1.sort_values(by='Hours', ascending=False)
 
 # Bar Chart for IT Activity Duration by Person
 it_hours_bar1 = px.bar(
     it_hours1,
     x="Person completing this form:",
-    y='Activity Duration (hours):',
+    y='Hours',
     color="Person completing this form:",
-    text='Activity Duration (hours):',
+    text='Hours',
 ).update_layout(
     height=450, 
     width=900,
     title=dict(
-        text='Total IT Hours by Person (First Half)',
+        text='IT Hours by Person',
         x=0.5, 
         font=dict(size=25, family='Calibri', color='black'),
     ),
@@ -899,7 +893,7 @@ it_hours_bar1 = px.bar(
         showticklabels=True
     ),
     yaxis=dict(
-        title=dict(text='Activity Duration (hours)', font=dict(size=20)),
+        title=dict(text='Hours', font=dict(size=20)),
     ),
     legend=dict(
         title='Person',
@@ -922,9 +916,9 @@ it_hours_bar1 = px.bar(
 it_hours_pie1 = px.pie(
     it_hours1,
     names="Person completing this form:",
-    values='Activity Duration (hours):'
+    values='Hours'
 ).update_layout(
-    title='Ratio of IT Hours by Person (First Half)',
+    title='Ratio of IT Hours by Person',
     title_x=0.5,
     font=dict(family='Calibri', size=17, color='black')
 ).update_traces(
@@ -965,13 +959,13 @@ it_table1.update_layout(
 # df_it1['Hours'] = pd.to_numeric(df_it1['Activity Duration (hours):'], errors='coerce')
 
 # Group by 'Person completing this form:' and sum the 'How much time did you spend on these tasks? (minutes)' column
-it_hours2 = df_it2.groupby('Person completing this form:')['Activity Duration (hours):'].sum().reset_index()
+it_hours2 = df_it2.groupby('Person completing this form:')['Hours'].sum().reset_index()
 
 # Convert minutes to hours by dividing by 60
 # it_hours2['Activity Duration (hours):'] = it_hours2['How much time did you spend on these tasks? (minutes)'] / 60
 
 # Optional: Sort the results by total activity duration (in hours), descending
-it_hours2 = it_hours2.sort_values(by='Activity Duration (hours):', ascending=False)
+# it_hours2 = it_hours2.sort_values(by='Activity Duration (hours):', ascending=False)
 
 # print(df_it2)
 
@@ -982,9 +976,9 @@ it_hours2 = it_hours2.sort_values(by='Activity Duration (hours):', ascending=Fal
 it_hours_bar2 = px.bar(
     it_hours2,  # Use the 'it_hours2' DataFrame
     x="Person completing this form:",  # X-axis: Person
-    y='Activity Duration (hours):',  # Y-axis: Activity Duration in hours
+    y='Hours',  # Y-axis: Activity Duration in hours
     color="Person completing this form:",  # Color by Person
-    text='Activity Duration (hours):',  # Display activity duration in hours as text
+    text='Hours',  # Display activity duration in hours as text
 ).update_layout(
     height=450, 
     width=900,
@@ -1013,7 +1007,7 @@ it_hours_bar2 = px.bar(
     ),
     yaxis=dict(
         title=dict(
-            text='Activity Duration (hours)',
+            text='Hours',
             font=dict(size=20),  # Font size for the title
         ),
     ),
@@ -1039,7 +1033,7 @@ it_hours_bar2 = px.bar(
 it_hours_pie2 = px.pie(
     it_hours2,  # Use the 'it_hours2' DataFrame
     names="Person completing this form:",  # Person names as the slice labels
-    values='Activity Duration (hours):'  # Use activity duration in hours as values
+    values='Hours'  # Use activity duration in hours as values
 ).update_layout(
     title='Ratio of IT Hours by Person',
     title_x=0.5,
@@ -1312,7 +1306,7 @@ html.Div(
             className='divv', 
             children=[ 
                 html.H1('BMHC Employee Hours', className='title'),
-                html.H1('02/14/2025 - 02/28/2025', className='title2'),
+                html.H1('02/15/2025 - 02/28/2025', className='title2'),
                 html.Div(
                     className='btn-box', 
                     children=[
