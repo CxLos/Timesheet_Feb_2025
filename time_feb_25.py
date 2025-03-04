@@ -130,7 +130,7 @@ for df in [df_eng1, df_eng2, df_nav1, df_nav2]:
 
 # Group by 'Person filling out this form:' and sum the 'Activity duration (minutes):'
 # Group by 'Person filling out this form:' and sum the 'Activity duration (minutes):'
-nav_hours1 = df_nav1.groupby('Person filling out this form:')['Hours'].sum().reset_index()
+nav_hours1 = df_nav1.groupby('Person submitting this form:')['Hours'].sum().reset_index()
 
 # nav_hours1['Activity duration (hours):'] = nav_hours1['Activity duration (minutes):'] / 60
 
@@ -143,9 +143,9 @@ nav_hours1 = df_nav1.groupby('Person filling out this form:')['Hours'].sum().res
 # Bar Chart for Activity Duration by Person
 nav_hours_bar1 = px.bar(
     nav_hours1,
-    x="Person filling out this form:",
+    x="Person submitting this form:",
     y='Hours',  # Now using hours
-    color="Person filling out this form:",
+    color="Person submitting this form:",
     text='Hours', 
 ).update_layout(
     height=450, 
@@ -200,7 +200,7 @@ nav_hours_bar1 = px.bar(
 # Location Pie Chart
 nav_hours_pie1 = px.pie(
     nav_hours1,  # Use the grouped data for the pie chart
-    names="Person filling out this form:",
+    names="Person submitting this form:",
     values='Hours'  # Show activity duration in hours
 ).update_layout(
     title='Ratio of Hours by Person',
@@ -240,7 +240,7 @@ nav_table1 = go.Figure(data=[go.Table(
 nav_table1.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
     height=400,
-    # width=1500,  # Set a smaller width to make columns thinner
+    width=500,  # Set a smaller width to make columns thinner
     paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
 )
@@ -248,7 +248,7 @@ nav_table1.update_layout(
 # --------------------- Navigation Hours 2 --------------------- #
 
 # Group by 'Person filling out this form:' and sum the 'Activity duration (minutes):'
-nav_hours2 = df_nav2.groupby('Person filling out this form:')['Hours'].sum().reset_index()
+nav_hours2 = df_nav2.groupby('Person submitting this form:')['Hours'].sum().reset_index()
 
 # nav_hours2['Activity duration (hours):'] = nav_hours2['Activity duration (minutes):'] / 60
 
@@ -261,9 +261,9 @@ nav_hours2 = df_nav2.groupby('Person filling out this form:')['Hours'].sum().res
 # Bar Chart for Activity Duration by Person
 nav_hours_bar2 = px.bar(
     nav_hours2,
-    x="Person filling out this form:",
+    x="Person submitting this form:",
     y='Hours',  # Now using hours
-    color="Person filling out this form:",
+    color="Person submitting this form:",
     text='Hours',  # Display the activity duration in hours
 ).update_layout(
     height=450, 
@@ -318,7 +318,7 @@ nav_hours_bar2 = px.bar(
 # Location Pie Chart
 nav_hours_pie2 = px.pie(
     nav_hours2,  # Use the grouped data for the pie chart
-    names="Person filling out this form:",
+    names="Person submitting this form:",
     values='Hours'  # Show activity duration in hours
 ).update_layout(
     title='Ratio of Hours by Person',
@@ -329,7 +329,7 @@ nav_hours_pie2 = px.pie(
         color='black'
     )
 ).update_traces(
-    rotation=90,
+    rotation=20,
     textinfo='value+percent',
     hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'  # Updated hovertemplate to show hours
 )
@@ -358,7 +358,7 @@ nav_table2 = go.Figure(data=[go.Table(
 nav_table2.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
     height=400,
-    # width=1500,  # Set a smaller width to make columns thinner
+    width=500,  # Set a smaller width to make columns thinner
     paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
 )
@@ -382,7 +382,7 @@ nav_table2.update_layout(
 # df_mc1['Activity duration (hours):'] = pd.to_numeric(df_mc1['Activity duration (hours):'], errors='coerce')
 
 # Group by 'Person completing this form:' and sum the 'Activity duration (hours):'
-mc_hours1 = df_mc1.groupby('Person completing this form:')['Hours'].sum().reset_index()
+mc_hours1 = df_mc1.groupby('Person submitting this form:')['Hours'].sum().reset_index()
 
 # Optional: Sort the results by total activity duration (in hours), descending
 mc_hours1 = mc_hours1.sort_values(by='Hours', ascending=False)
@@ -390,9 +390,9 @@ mc_hours1 = mc_hours1.sort_values(by='Hours', ascending=False)
 # Bar Chart for Activity Duration by Person
 mc_hours_bar1 = px.bar(
     mc_hours1,
-    x="Person completing this form:",
+    x="Person submitting this form:",
     y='Hours',
-    color="Person completing this form:",
+    color="Person submitting this form:",
     text='Hours',
 ).update_layout(
     height=450, 
@@ -432,7 +432,7 @@ mc_hours_bar1 = px.bar(
 # Pie Chart for Activity Duration by Person
 mc_hours_pie1 = px.pie(
     mc_hours1,
-    names="Person completing this form:",
+    names="Person submitting this form:",
     values='Hours'
 ).update_layout(
     title='Ratio of MarCom Hours by Person (First Half)',
@@ -465,6 +465,7 @@ mc_table1 = go.Figure(data=[go.Table(
 mc_table1.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),
     height=400,
+    width=500,
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)'
 )
@@ -476,7 +477,7 @@ mc_table1.update_layout(
 # df_mc2['Activity duration (hours):'] = pd.to_numeric(df_mc2['Activity duration (hours):'], errors='coerce')
 
 # Group by 'Person completing this form:' and sum the 'Activity duration (hours):'
-mc_hours2 = df_mc2.groupby('Person completing this form:')['Hours'].sum().reset_index()
+mc_hours2 = df_mc2.groupby('Person submitting this form:')['Hours'].sum().reset_index()
 
 # Optional: Sort the results by total activity duration (in hours), descending
 mc_hours2 = mc_hours2.sort_values(by='Hours', ascending=False)
@@ -487,9 +488,9 @@ mc_hours2 = mc_hours2.sort_values(by='Hours', ascending=False)
 # Bar Chart for Activity Duration by Person
 mc_hours_bar2 = px.bar(
     mc_hours2,  # Use the grouped data for the bar chart
-    x="Person completing this form:",  # X-axis as the person completing the form
+    x="Person submitting this form:",  # X-axis as the person completing the form
     y='Hours',  # Now using hours
-    color="Person completing this form:",  # Color by the person completing the form
+    color="Person submitting this form:",  # Color by the person completing the form
     text='Hours',  # Display the activity duration in hours
 ).update_layout(
     height=450, 
@@ -544,7 +545,7 @@ mc_hours_bar2 = px.bar(
 # Pie Chart for Activity Duration by Person
 mc_hours_pie2 = px.pie(
     mc_hours2,  # Use the grouped data for the pie chart
-    names="Person completing this form:",  # Names as the person completing the form
+    names="Person submitting this form:",  # Names as the person completing the form
     values='Hours'  # Show activity duration in hours
 ).update_layout(
     title='Ratio of MarCom Hours by Person',
@@ -584,7 +585,7 @@ mc_table2 = go.Figure(data=[go.Table(
 mc_table2.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
     height=400,
-    # width=1500,  # Set a smaller width to make columns thinner
+    width=500,  # Set a smaller width to make columns thinner
     paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
 )
@@ -691,6 +692,7 @@ eng_table1 = go.Figure(data=[go.Table(
 eng_table1.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),
     height=400,
+    width=500,
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)'
 )
@@ -779,7 +781,7 @@ eng_hours_pie2 = px.pie(
         color='black'
     )
 ).update_traces(
-    rotation=90,
+    rotation=0,
     textinfo='value+percent',  # Show value and percentage on the pie slices
     hovertemplate='<b>%{label}</b>: %{value} hours<extra></extra>'  # Updated hovertemplate to show hours
 )
@@ -805,6 +807,7 @@ eng_table2 = go.Figure(data=[go.Table(
 eng_table2.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
     height=400,
+    width=500,
     paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
 )
@@ -865,7 +868,7 @@ eng_table2.update_layout(
 # df_it1['Activity Duration (hours):'] = pd.to_numeric(df_it1['Activity Duration (hours):'], errors='coerce')
 
 # Group by 'Person completing this form:' and sum the 'Activity Duration (hours):'
-it_hours1 = df_it1.groupby('Person completing this form:')['Hours'].sum().reset_index()
+it_hours1 = df_it1.groupby('Person submitting this form:')['Hours'].sum().reset_index()
 
 # Sort the results by total activity duration (in hours), descending
 # it_hours1 = it_hours1.sort_values(by='Hours', ascending=False)
@@ -873,9 +876,9 @@ it_hours1 = df_it1.groupby('Person completing this form:')['Hours'].sum().reset_
 # Bar Chart for IT Activity Duration by Person
 it_hours_bar1 = px.bar(
     it_hours1,
-    x="Person completing this form:",
+    x="Person submitting this form:",
     y='Hours',
-    color="Person completing this form:",
+    color="Person submitting this form:",
     text='Hours',
 ).update_layout(
     height=450, 
@@ -915,7 +918,7 @@ it_hours_bar1 = px.bar(
 # Pie Chart for IT Activity Duration Ratio by Person
 it_hours_pie1 = px.pie(
     it_hours1,
-    names="Person completing this form:",
+    names="Person submitting this form:",
     values='Hours'
 ).update_layout(
     title='Ratio of IT Hours by Person',
@@ -948,10 +951,10 @@ it_table1 = go.Figure(data=[go.Table(
 it_table1.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),
     height=400,
+    width=500,
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)'
 )
-
 
 # ---------------- IT Part 2 ------------ #
 
@@ -959,7 +962,7 @@ it_table1.update_layout(
 # df_it1['Hours'] = pd.to_numeric(df_it1['Activity Duration (hours):'], errors='coerce')
 
 # Group by 'Person completing this form:' and sum the 'How much time did you spend on these tasks? (minutes)' column
-it_hours2 = df_it2.groupby('Person completing this form:')['Hours'].sum().reset_index()
+it_hours2 = df_it2.groupby('Person submitting this form:')['Hours'].sum().reset_index()
 
 # Convert minutes to hours by dividing by 60
 # it_hours2['Activity Duration (hours):'] = it_hours2['How much time did you spend on these tasks? (minutes)'] / 60
@@ -975,9 +978,9 @@ it_hours2 = df_it2.groupby('Person completing this form:')['Hours'].sum().reset_
 # Bar Chart for IT Activity Duration by Person
 it_hours_bar2 = px.bar(
     it_hours2,  # Use the 'it_hours2' DataFrame
-    x="Person completing this form:",  # X-axis: Person
+    x="Person submitting this form:",  # X-axis: Person
     y='Hours',  # Y-axis: Activity Duration in hours
-    color="Person completing this form:",  # Color by Person
+    color="Person submitting this form:",  # Color by Person
     text='Hours',  # Display activity duration in hours as text
 ).update_layout(
     height=450, 
@@ -1032,7 +1035,7 @@ it_hours_bar2 = px.bar(
 # Pie Chart for IT Activity Duration Ratio by Person
 it_hours_pie2 = px.pie(
     it_hours2,  # Use the 'it_hours2' DataFrame
-    names="Person completing this form:",  # Person names as the slice labels
+    names="Person submitting this form:",  # Person names as the slice labels
     values='Hours'  # Use activity duration in hours as values
 ).update_layout(
     title='Ratio of IT Hours by Person',
@@ -1072,9 +1075,117 @@ it_table2 = go.Figure(data=[go.Table(
 it_table2.update_layout(
     margin=dict(l=50, r=50, t=30, b=40),  # Remove margins
     height=400,
-    # width=1500,  # Set a smaller width to make columns thinner
+    width=500,  # Set a smaller width to make columns thinner
     paper_bgcolor='rgba(0,0,0,0)',  # Transparent background
     plot_bgcolor='rgba(0,0,0,0)'  # Transparent plot area
+)
+
+# ============================== Total Hours ========================== #
+
+# Select only the required columns from each dataframe
+columns_to_keep = ['Person submitting this form:', 'Hours']
+
+# The code is concatenating the specified columns from four different DataFrames (`eng_hours1`,
+# `nav_hours1`, `it_hours1`, `mc_hours1`) along the rows axis (axis 0) using the `pd.concat` function
+# from the pandas library. The `columns_to_keep` variable contains the columns that are being selected
+# from each DataFrame. The `ignore_index=True` parameter is used to reset the index of the resulting
+# DataFrame to have a continuous range of integers.
+
+total_hours1 = pd.concat(
+    [eng_hours1[columns_to_keep], nav_hours1[columns_to_keep], it_hours1[columns_to_keep], mc_hours1[columns_to_keep]],
+    ignore_index=True
+)
+total_hours1 = total_hours1.sort_values(by='Person submitting this form:', ascending=True)
+# print(total_hours1)
+
+total_hours2 = pd.concat(
+    [eng_hours2[columns_to_keep], nav_hours2[columns_to_keep], it_hours2[columns_to_keep], mc_hours2[columns_to_keep]],
+    ignore_index=True
+)
+total_hours2 = total_hours2.sort_values(by='Person submitting this form:', ascending=True)
+# print(total_hours2)
+
+total_hours = pd.concat([total_hours1, total_hours2], ignore_index=True)
+total_hours_grouped = total_hours.groupby('Person submitting this form:', as_index=False).sum()
+total_hours_grouped = total_hours_grouped.sort_values(by='Person submitting this form:', ascending=True)
+print(total_hours_grouped)
+
+# Total Hours 1 Table
+total_hours_table1 = go.Figure(data=[go.Table(
+    header=dict(
+        values=list(total_hours1.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,
+        font=dict(size=12)
+    ),
+    cells=dict(
+        values=[total_hours1[col] for col in total_hours1.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,
+        font=dict(size=12)
+    )
+)])
+
+total_hours_table1.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),
+    height=600,
+    width=500,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)'
+)
+
+# Total Hours 2 Table
+total_hours_table2 = go.Figure(data=[go.Table(
+    header=dict(
+        values=list(total_hours2.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,
+        font=dict(size=12)
+    ),
+    cells=dict(
+        values=[total_hours2[col] for col in total_hours2.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,
+        font=dict(size=12)
+    )
+)])
+
+total_hours_table2.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),
+    height=600,
+    width=500,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)'
+)
+
+# Total Hours Grouped Table
+total_hours_grouped_table = go.Figure(data=[go.Table(
+    header=dict(
+        values=list(total_hours_grouped.columns),
+        fill_color='paleturquoise',
+        align='center',
+        height=30,
+        font=dict(size=12)
+    ),
+    cells=dict(
+        values=[total_hours_grouped[col] for col in total_hours_grouped.columns],
+        fill_color='lavender',
+        align='left',
+        height=25,
+        font=dict(size=12)
+    )
+)])
+
+total_hours_grouped_table.update_layout(
+    margin=dict(l=50, r=50, t=30, b=40),
+    height=600,
+    width=500,
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)'
 )
 
 # ============================== Dash Application ========================== #
@@ -1299,6 +1410,50 @@ html.Div(
         )
     ]
 ),
+        
+# ROW 2
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='2/1/2025 - 2/14/2025'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            className='data',
+                            figure=total_hours_table1
+                        )
+                    ]
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[                
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            # figure=
+                        )
+                    ]
+                )
+   
+            ]
+        )
+    ]
+),
     
 # ====================================================================================== # 
 
@@ -1508,6 +1663,89 @@ html.Div(
         )
     ]
 ),
+# ROW 2
+html.Div(
+    className='row2',
+    children=[
+        html.Div(
+            className='graph3',
+            children=[
+                html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='Hours 2/15/2025 - 2/28/2025'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            className='data',
+                            figure=total_hours_table2
+                        )
+                    ]
+                )
+            ]
+        ),
+        html.Div(
+            className='graph4',
+            children=[                
+              html.Div(
+                    className='table',
+                    children=[
+                        html.H1(
+                            className='table-title',
+                            children='Total Hours 2/1-2025 - 2/28/2025'
+                        )
+                    ]
+                ),
+                html.Div(
+                    className='table2', 
+                    children=[
+                        dcc.Graph(
+                            figure=total_hours_table1
+                        )
+                    ]
+                )
+   
+            ]
+        )
+    ]
+),
+        
+        
+# ROW 2
+# html.Div(
+#     className='row2',
+#     children=[
+#         html.Div(
+#             className='graph4',
+#             children=[                
+#               html.Div(
+#                     className='table',
+#                     children=[
+#                         html.H1(
+#                             className='table-title',
+#                             children='Total Hours February 2025'
+#                         )
+#                     ]
+#                 ),
+#                 html.Div(
+#                     className='table2', 
+#                     children=[
+#                         dcc.Graph(
+#                             figure=total_hours_grouped_table
+#                         )
+#                     ]
+#                 )
+   
+#             ]
+#         )
+#     ]
+# ),
 ])
 
 print(f"Serving Flask app '{current_file}'! 🚀")
@@ -1519,28 +1757,38 @@ if __name__ == '__main__':
 
 # updated_path = 'data/nav_hours_cleaned.xlsx'
 # data_path = os.path.join(script_dir, updated_path)
-# nav_hours.to_excel(data_path, index=False)
+# nav_hours1.to_excel(data_path, index=False)
 # print(f"DataFrame saved to {data_path}")
 
 # updated_path = 'data/mc_hours_cleaned.xlsx'
 # data_path = os.path.join(script_dir, updated_path)
-# mc_hours.to_excel(data_path, index=False)
+# mc_hours1.to_excel(data_path, index=False)
 # print(f"DataFrame saved to {data_path}")
 
 # updated_path = 'data/eng_hours_cleaned.xlsx'
 # data_path = os.path.join(script_dir, updated_path)
-# eng_hours.to_excel(data_path, index=False)
+# eng_hours1.to_excel(data_path, index=False)
 # print(f"DataFrame saved to {data_path}")
 
 # updated_path = 'data/it_hours_cleaned.xlsx'
 # data_path = os.path.join(script_dir, updated_path)
-# it_hours.to_excel(data_path, index=False)
+# it_hours1.to_excel(data_path, index=False)
 # print(f"DataFrame saved to {data_path}")
 
-# updated_path1 = 'data/service_tracker_q4_2024_cleaned.csv'
-# data_path1 = os.path.join(script_dir, updated_path1)
-# df.to_csv(data_path1, index=False)
-# print(f"DataFrame saved to {data_path1}")
+# updated_path = 'data/hours_2_1_to_2_14.xlsx'
+# data_path = os.path.join(script_dir, updated_path)
+# total_hours1.to_excel(data_path, index=False)
+# print(f"DataFrame saved to {data_path}")
+
+# updated_path = 'data/hours_2_15_to_2_28.xlsx'
+# data_path = os.path.join(script_dir, updated_path)
+# total_hours2.to_excel(data_path, index=False)
+# print(f"DataFrame saved to {data_path}")
+
+# updated_path = 'data/hours_2_1_to_2_28.xlsx'
+# data_path = os.path.join(script_dir, updated_path)
+# total_hours_grouped.to_excel(data_path, index=False)
+# print(f"DataFrame saved to {data_path}")
 
 # -------------------------------------------- KILL PORT ---------------------------------------------------
 
