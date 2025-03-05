@@ -54,16 +54,18 @@ df_mc['Date of Activity'] = pd.to_datetime(df_mc['Date of Activity'], errors='co
 df_it['Date of Activity'] = pd.to_datetime(df_it['Date of Activity'], errors='coerce')
 
 # FIRST HALF
-df_nav1 = df_nav[(df_nav['Date of Activity'] >= "2025-02-01") & (df_nav['Date of Activity'] <= "2025-02-14")]
-df_eng1 = df_eng[(df_eng['Date of Activity'] >= "2025-02-01") & (df_eng['Date of Activity'] <= "2025-02-14")]
-df_mc1 = df_mc[(df_mc['Date of Activity'] >= "2025-02-01") & (df_mc['Date of Activity'] <= "2025-02-14")]
-df_it1 = df_it[(df_it['Date of Activity'] >= "2025-02-01") & (df_it['Date of Activity'] <= "2025-02-14")]
+# FIRST HALF
+df_nav1 = df_nav[(df_nav['Date of Activity'] >= "2025-02-02") & (df_nav['Date of Activity'] <= "2025-02-15")]
+df_eng1 = df_eng[(df_eng['Date of Activity'] >= "2025-02-02") & (df_eng['Date of Activity'] <= "2025-02-15")]
+df_mc1 = df_mc[(df_mc['Date of Activity'] >= "2025-02-02") & (df_mc['Date of Activity'] <= "2025-02-15")]
+df_it1 = df_it[(df_it['Date of Activity'] >= "2025-02-02") & (df_it['Date of Activity'] <= "2025-02-15")]
 
 # SECOND HALF
-df_nav2 = df_nav[(df_nav['Date of Activity'] >= "2025-02-15") & (df_nav['Date of Activity'] <= "2025-02-28")]
-df_eng2 = df_eng[(df_eng['Date of Activity'] >= "2025-02-15") & (df_eng['Date of Activity'] <= "2025-02-28")]
-df_mc2 = df_mc[(df_mc['Date of Activity'] >= "2025-02-15") & (df_mc['Date of Activity'] <= "2025-02-28")]
-df_it2 = df_it[(df_it['Date of Activity'] >= "2025-02-15") & (df_it['Date of Activity'] <= "2025-02-28")]
+# SECOND HALF
+df_nav2 = df_nav[(df_nav['Date of Activity'] >= "2025-02-16") & (df_nav['Date of Activity'] <= "2025-03-01")]
+df_eng2 = df_eng[(df_eng['Date of Activity'] >= "2025-02-16") & (df_eng['Date of Activity'] <= "2025-03-01")]
+df_mc2 = df_mc[(df_mc['Date of Activity'] >= "2025-02-16") & (df_mc['Date of Activity'] <= "2025-03-01")]
+df_it2 = df_it[(df_it['Date of Activity'] >= "2025-02-16") & (df_it['Date of Activity'] <= "2025-03-01")]
 
 # Rename "Activity Duration (hours):" to "Hours"
 # df_it1['Hours'] = pd.to_numeric(df_it1['Activity Duration (hours):'], errors='coerce')
@@ -1091,23 +1093,28 @@ columns_to_keep = ['Person submitting this form:', 'Hours']
 # from each DataFrame. The `ignore_index=True` parameter is used to reset the index of the resulting
 # DataFrame to have a continuous range of integers.
 
+# Total Hours 1
 total_hours1 = pd.concat(
     [eng_hours1[columns_to_keep], nav_hours1[columns_to_keep], it_hours1[columns_to_keep], mc_hours1[columns_to_keep]],
     ignore_index=True
 )
-total_hours1 = total_hours1.sort_values(by='Person submitting this form:', ascending=True)
+total_hours1 = total_hours1.rename(columns={'Person submitting this form:': 'Name'})
+total_hours1 = total_hours1.sort_values(by='Name', ascending=True)
 # print(total_hours1)
 
+# Total Hours 2
 total_hours2 = pd.concat(
     [eng_hours2[columns_to_keep], nav_hours2[columns_to_keep], it_hours2[columns_to_keep], mc_hours2[columns_to_keep]],
     ignore_index=True
 )
-total_hours2 = total_hours2.sort_values(by='Person submitting this form:', ascending=True)
+total_hours2 = total_hours2.rename(columns={'Person submitting this form:': 'Name'})
+total_hours2 = total_hours2.sort_values(by='Name', ascending=True)
 # print(total_hours2)
 
+# Total Hours Grouped
 total_hours = pd.concat([total_hours1, total_hours2], ignore_index=True)
-total_hours_grouped = total_hours.groupby('Person submitting this form:', as_index=False).sum()
-total_hours_grouped = total_hours_grouped.sort_values(by='Person submitting this form:', ascending=True)
+total_hours_grouped = total_hours.groupby('Name', as_index=False).sum()
+total_hours_grouped = total_hours_grouped.sort_values(by='Name', ascending=True)
 print(total_hours_grouped)
 
 # Total Hours 1 Table
@@ -1203,7 +1210,7 @@ app.layout = html.Div(
             className='divv', 
             children=[ 
                 html.H1('BMHC Employee Hours', className='title'),
-                html.H1('02/01/2025 - 02/14/2025', className='title2'),
+                html.H1('02/02/2025 - 02/15/2025', className='title2'),
                 html.Div(
                     className='btn-box', 
                     children=[
@@ -1306,110 +1313,110 @@ html.Div(
 ),
         
 # ROW 2
-html.Div(
-    className='row2',
-    children=[
-        html.Div(
-            className='graph3',
-            children=[
-                html.Div(
-                    className='table',
-                    children=[
-                        html.H1(
-                            className='table-title',
-                            children='Navigation Hours Table'
-                        )
-                    ]
-                ),
-                html.Div(
-                    className='table2', 
-                    children=[
-                        dcc.Graph(
-                            className='data',
-                            figure=nav_table1
-                        )
-                    ]
-                )
-            ]
-        ),
-        html.Div(
-            className='graph4',
-            children=[                
-              html.Div(
-                    className='table',
-                    children=[
-                        html.H1(
-                            className='table-title',
-                            children='MarCom Hours Table'
-                        )
-                    ]
-                ),
-                html.Div(
-                    className='table2', 
-                    children=[
-                        dcc.Graph(
-                            figure=mc_table1
-                        )
-                    ]
-                )
+# html.Div(
+#     className='row2',
+#     children=[
+#         html.Div(
+#             className='graph3',
+#             children=[
+#                 html.Div(
+#                     className='table',
+#                     children=[
+#                         html.H1(
+#                             className='table-title',
+#                             children='Navigation Hours Table'
+#                         )
+#                     ]
+#                 ),
+#                 html.Div(
+#                     className='table2', 
+#                     children=[
+#                         dcc.Graph(
+#                             className='data',
+#                             figure=nav_table1
+#                         )
+#                     ]
+#                 )
+#             ]
+#         ),
+#         html.Div(
+#             className='graph4',
+#             children=[                
+#               html.Div(
+#                     className='table',
+#                     children=[
+#                         html.H1(
+#                             className='table-title',
+#                             children='MarCom Hours Table'
+#                         )
+#                     ]
+#                 ),
+#                 html.Div(
+#                     className='table2', 
+#                     children=[
+#                         dcc.Graph(
+#                             figure=mc_table1
+#                         )
+#                     ]
+#                 )
    
-            ]
-        )
-    ]
-),
+#             ]
+#         )
+#     ]
+# ),
         
-# ROW 2
-html.Div(
-    className='row2',
-    children=[
-        html.Div(
-            className='graph3',
-            children=[
-                html.Div(
-                    className='table',
-                    children=[
-                        html.H1(
-                            className='table-title',
-                            children='Engagement Hours Table'
-                        )
-                    ]
-                ),
-                html.Div(
-                    className='table2', 
-                    children=[
-                        dcc.Graph(
-                            className='data',
-                            figure=eng_table1
-                        )
-                    ]
-                )
-            ]
-        ),
-        html.Div(
-            className='graph4',
-            children=[                
-              html.Div(
-                    className='table',
-                    children=[
-                        html.H1(
-                            className='table-title',
-                            children='IT Hours Table'
-                        )
-                    ]
-                ),
-                html.Div(
-                    className='table2', 
-                    children=[
-                        dcc.Graph(
-                            figure=it_table1
-                        )
-                    ]
-                )
+# # ROW 2
+# html.Div(
+#     className='row2',
+#     children=[
+#         html.Div(
+#             className='graph3',
+#             children=[
+#                 html.Div(
+#                     className='table',
+#                     children=[
+#                         html.H1(
+#                             className='table-title',
+#                             children='Engagement Hours Table'
+#                         )
+#                     ]
+#                 ),
+#                 html.Div(
+#                     className='table2', 
+#                     children=[
+#                         dcc.Graph(
+#                             className='data',
+#                             figure=eng_table1
+#                         )
+#                     ]
+#                 )
+#             ]
+#         ),
+#         html.Div(
+#             className='graph4',
+#             children=[                
+#               html.Div(
+#                     className='table',
+#                     children=[
+#                         html.H1(
+#                             className='table-title',
+#                             children='IT Hours Table'
+#                         )
+#                     ]
+#                 ),
+#                 html.Div(
+#                     className='table2', 
+#                     children=[
+#                         dcc.Graph(
+#                             figure=it_table1
+#                         )
+#                     ]
+#                 )
    
-            ]
-        )
-    ]
-),
+#             ]
+#         )
+#     ]
+# ),
         
 # ROW 2
 html.Div(
@@ -1461,7 +1468,7 @@ html.Div(
             className='divv', 
             children=[ 
                 html.H1('BMHC Employee Hours', className='title'),
-                html.H1('02/15/2025 - 02/28/2025', className='title2'),
+                html.H1('02/16/2025 - 03/01/2025', className='title2'),
                 html.Div(
                     className='btn-box', 
                     children=[
@@ -1559,110 +1566,111 @@ html.Div(
 ),
         
 # ROW 2
-html.Div(
-    className='row2',
-    children=[
-        html.Div(
-            className='graph3',
-            children=[
-                html.Div(
-                    className='table',
-                    children=[
-                        html.H1(
-                            className='table-title',
-                            children='Navigation Hours Table'
-                        )
-                    ]
-                ),
-                html.Div(
-                    className='table2', 
-                    children=[
-                        dcc.Graph(
-                            className='data',
-                            figure=nav_table2
-                        )
-                    ]
-                )
-            ]
-        ),
-        html.Div(
-            className='graph4',
-            children=[                
-              html.Div(
-                    className='table',
-                    children=[
-                        html.H1(
-                            className='table-title',
-                            children='MarCom Hours Table'
-                        )
-                    ]
-                ),
-                html.Div(
-                    className='table2', 
-                    children=[
-                        dcc.Graph(
-                            figure=mc_table2
-                        )
-                    ]
-                )
+# html.Div(
+#     className='row2',
+#     children=[
+#         html.Div(
+#             className='graph3',
+#             children=[
+#                 html.Div(
+#                     className='table',
+#                     children=[
+#                         html.H1(
+#                             className='table-title',
+#                             children='Navigation Hours Table'
+#                         )
+#                     ]
+#                 ),
+#                 html.Div(
+#                     className='table2', 
+#                     children=[
+#                         dcc.Graph(
+#                             className='data',
+#                             figure=nav_table2
+#                         )
+#                     ]
+#                 )
+#             ]
+#         ),
+#         html.Div(
+#             className='graph4',
+#             children=[                
+#               html.Div(
+#                     className='table',
+#                     children=[
+#                         html.H1(
+#                             className='table-title',
+#                             children='MarCom Hours Table'
+#                         )
+#                     ]
+#                 ),
+#                 html.Div(
+#                     className='table2', 
+#                     children=[
+#                         dcc.Graph(
+#                             figure=mc_table2
+#                         )
+#                     ]
+#                 )
    
-            ]
-        )
-    ]
-),
+#             ]
+#         )
+#     ]
+# ),
         
-# ROW 2
-html.Div(
-    className='row2',
-    children=[
-        html.Div(
-            className='graph3',
-            children=[
-                html.Div(
-                    className='table',
-                    children=[
-                        html.H1(
-                            className='table-title',
-                            children='Engagement Hours Table'
-                        )
-                    ]
-                ),
-                html.Div(
-                    className='table2', 
-                    children=[
-                        dcc.Graph(
-                            className='data',
-                            figure=eng_table2
-                        )
-                    ]
-                )
-            ]
-        ),
-        html.Div(
-            className='graph4',
-            children=[                
-              html.Div(
-                    className='table',
-                    children=[
-                        html.H1(
-                            className='table-title',
-                            children='IT Hours Table'
-                        )
-                    ]
-                ),
-                html.Div(
-                    className='table2', 
-                    children=[
-                        dcc.Graph(
-                            figure=it_table2
-                        )
-                    ]
-                )
+# # ROW 2
+# html.Div(
+#     className='row2',
+#     children=[
+#         html.Div(
+#             className='graph3',
+#             children=[
+#                 html.Div(
+#                     className='table',
+#                     children=[
+#                         html.H1(
+#                             className='table-title',
+#                             children='Engagement Hours Table'
+#                         )
+#                     ]
+#                 ),
+#                 html.Div(
+#                     className='table2', 
+#                     children=[
+#                         dcc.Graph(
+#                             className='data',
+#                             figure=eng_table2
+#                         )
+#                     ]
+#                 )
+#             ]
+#         ),
+#         html.Div(
+#             className='graph4',
+#             children=[                
+#               html.Div(
+#                     className='table',
+#                     children=[
+#                         html.H1(
+#                             className='table-title',
+#                             children='IT Hours Table'
+#                         )
+#                     ]
+#                 ),
+#                 html.Div(
+#                     className='table2', 
+#                     children=[
+#                         dcc.Graph(
+#                             figure=it_table2
+#                         )
+#                     ]
+#                 )
    
-            ]
-        )
-    ]
-),
+#             ]
+#         )
+#     ]
+# ),
+
 # ROW 2
 html.Div(
     className='row2',
@@ -1675,7 +1683,7 @@ html.Div(
                     children=[
                         html.H1(
                             className='table-title',
-                            children='Hours 2/15/2025 - 2/28/2025'
+                            children='Hours 2/16/2025 - 3/1/2025'
                         )
                     ]
                 ),
@@ -1698,7 +1706,7 @@ html.Div(
                     children=[
                         html.H1(
                             className='table-title',
-                            children='Total Hours 2/1-2025 - 2/28/2025'
+                            children='Total Hours 2/2/2025 - 3/01/2025'
                         )
                     ]
                 ),
@@ -1706,7 +1714,7 @@ html.Div(
                     className='table2', 
                     children=[
                         dcc.Graph(
-                            figure=total_hours_table1
+                            figure=total_hours_grouped_table
                         )
                     ]
                 )
@@ -1775,17 +1783,17 @@ if __name__ == '__main__':
 # it_hours1.to_excel(data_path, index=False)
 # print(f"DataFrame saved to {data_path}")
 
-# updated_path = 'data/hours_2_1_to_2_14.xlsx'
+# updated_path = 'data/hours_2_2_to_2_15.xlsx'
 # data_path = os.path.join(script_dir, updated_path)
 # total_hours1.to_excel(data_path, index=False)
 # print(f"DataFrame saved to {data_path}")
 
-# updated_path = 'data/hours_2_15_to_2_28.xlsx'
+# updated_path = 'data/hours_2_16_to_3_1.xlsx'
 # data_path = os.path.join(script_dir, updated_path)
 # total_hours2.to_excel(data_path, index=False)
 # print(f"DataFrame saved to {data_path}")
 
-# updated_path = 'data/hours_2_1_to_2_28.xlsx'
+# updated_path = 'data/hours_2_2_to_3_1.xlsx'
 # data_path = os.path.join(script_dir, updated_path)
 # total_hours_grouped.to_excel(data_path, index=False)
 # print(f"DataFrame saved to {data_path}")
